@@ -1,0 +1,43 @@
+{
+  "name": "ts-rakentaja",
+  "version": "0.1.0",
+  "description": "Utility pack to build TypeScript faster and more efficient",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "tsx --test \"test/**/*.spec.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ausginer/ts-rakentaja.git"
+  },
+  "keywords": [
+    "typescript",
+    "constructor",
+    "builder",
+    "ast"
+  ],
+  "author": "Vlad Rindevich <vladrin@vaadin.com> (https://github.com/Lodin)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ausginer/ts-rakentaja/issues"
+  },
+  "homepage": "https://github.com/ausginer/ts-rakentaja#readme",
+  "dependencies": {
+    "itertools": "^2.3.2",
+    "nanoid": "^5.0.8",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.0.1",
+    "@types/chai-like": "^1.1.3",
+    "@types/node": "^22.9.1",
+    "chai": "^5.1.2",
+    "chai-like": "^1.1.3",
+    "eslint": "^8.57.0",
+    "eslint-config-vaadin": "^1.0.0-alpha.28",
+    "eslint-plugin-tsdoc": "^0.3.0",
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.2"
+  }
+}
