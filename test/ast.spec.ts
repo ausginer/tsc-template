@@ -1,27 +1,28 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { describe, it } from 'node:test';
-import { expect, use } from 'chai';
-import chaiLike from 'chai-like';
-import ts from 'typescript';
-import { ast, print } from '../src/index.js';
+import ts, { type ArrayLiteralExpression, type ExpressionStatement } from 'typescript';
+import { describe, expect, it } from 'vitest';
+import ast from '../src/index.js';
 
-use(chaiLike);
-
-await describe('ast', async () => {
-  await it('should generate a Typescript AST', () => {
-    const statement = ast`const x = 1;`;
-    expect(print(statement)).to.be.equal('const x = 1;\n');
+describe('ast', () => {
+  const printer = ts.createPrinter({
+    newLine: ts.NewLineKind.LineFeed,
   });
 
-  await it('should generate a Typescript AST with a filler', () => {
+  it('should generate a Typescript AST', () => {
+    const sourceFile = ast`const x = 1;`;
+    expect(printer.printFile(sourceFile)).to.be.equal('const x = 1;\n');
+  });
+
+  it('should generate a Typescript AST with a filler', () => {
     const array = [1, 2, 3];
     const arrayNode = ts.factory.createArrayLiteralExpression(array.map(ts.factory.createNumericLiteral));
-    const statement = ast`const x = ${arrayNode};`;
-    expect(print(statement)).to.be.equal('const x = [1, 2, 3];\n');
+    const sourceFile = ast`const x = ${arrayNode};`;
+    expect(printer.printFile(sourceFile)).to.be.equal('const x = [1, 2, 3];\n');
   });
 
-  await it('should accept a result of another ast function as a filler', () => {
-    const statement = ast`const x = ${ast`[1, 2, 3]`};`;
-    expect(print(statement)).to.be.equal('const x = [1, 2, 3];\n');
+  it('should accept a result of another ast function as a filler', () => {
+    const arrayAst = (ast`[1, 2, 3]`.statements[0] as ExpressionStatement).expression as ArrayLiteralExpression;
+    const sourceFile = ast`const x = ${arrayAst};`;
+    expect(printer.printFile(sourceFile)).to.be.equal('const x = [1, 2, 3];\n');
   });
 });

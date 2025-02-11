@@ -130,3 +130,9 @@ dist
 .pnp.*
 
 .idea
+.vite
+.coverage
+*.d.ts
+*.d.ts.map
+*.js
+*.js.map

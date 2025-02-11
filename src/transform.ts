@@ -1,10 +1,17 @@
-import ts, { type Node, type TransformationContext, type TransformerFactory, type VisitResult } from 'typescript';
+import ts, {
+  type Node,
+  type SourceFile,
+  type TransformationContext,
+  type TransformerFactory,
+  type Visitor,
+  type VisitResult,
+} from 'typescript';
 
 export type Transformer = (node: Node) => VisitResult<Node | undefined>;
 
-export function transform<T extends Node>(transformer: Transformer): TransformerFactory<T> {
-  return (context: TransformationContext) => (root: T) => {
-    const visitor = (node: Node): VisitResult<Node | undefined> => {
+export function transform(transformer: Transformer): TransformerFactory<SourceFile> {
+  return (context: TransformationContext) => (root: SourceFile) => {
+    const visitor: Visitor<Node, Node | undefined> = (node) => {
       const transformed = transformer(node);
 
       if (transformed !== node) {
