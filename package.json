@@ -1,6 +1,6 @@
 {
   "name": "tsc-template",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Utility to build TypeScript AST from a string, similar to @babel/template",
   "main": "index.js",
   "type": "module",
@@ -33,6 +33,9 @@
       "default": "./index.js"
     }
   },
+  "files": [
+    "*.{d.ts.map,d.ts,js.map,js}"
+  ],
   "peerDependencies": {
     "typescript": "5"
   },
