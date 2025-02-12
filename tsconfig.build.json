@@ -2,7 +2,8 @@
   "extends": ["./tsconfig.json"],
   "compilerOptions": {
     "outDir": ".",
-    "declarationMap": true
+    "declarationMap": true,
+    "removeComments": true
   },
   "include": ["src"],
   "exclude": []
