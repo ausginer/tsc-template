@@ -1,6 +1,6 @@
 ## tsc-template
 
-This project provides utilities to facilitate the creation and manipulation of TypeScript Abstract Syntax Trees (ASTs). The key utility is the `ast` function that works similarly to the (https://babeljs.io/docs/babel-template)[@babel/template] package but for TypeScript. 
+This project provides utilities to facilitate the creation and manipulation of TypeScript Abstract Syntax Trees (ASTs). The key utility is the `ast` function that works similarly to the [@babel/template](https://babeljs.io/docs/babel-template) package but for TypeScript. 
 
 ### Installation
 
