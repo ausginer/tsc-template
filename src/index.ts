@@ -16,24 +16,28 @@ export * from './createTransformer.js';
 
 export default function ast(
   parts: TemplateStringsArray,
-  ...fillers: ReadonlyArray<Node | null | undefined>
+  ...fillers: ReadonlyArray<Node | string | null | undefined>
 ): SourceFile {
   let code = '';
   const transformers: Array<TransformerFactory<SourceFile>> = [];
 
   for (let i = 0; i < parts.length; i++) {
-    let filler = fillers[i] ?? undefined;
+    const filler = fillers[i];
     code += parts[i];
 
     if (filler != null) {
-      const id = `$${crypto.randomUUID().replace(/-/gu, '_')}`;
-      code += id;
+      if (typeof filler === 'string') {
+        code += filler;
+      } else {
+        const id = `$${crypto.randomUUID().replace(/-/gu, '_')}`;
+        code += id;
 
-      if (isSourceFile(filler)) {
-        filler = findBestNode(filler);
+        transformers.push(
+          createTransformer((n) =>
+            isIdentifier(n) && n.text === id ? (isSourceFile(filler) ? findBestNode(filler) : filler) : n,
+          ),
+        );
       }
-
-      transformers.push(createTransformer((n) => (isIdentifier(n) && n.text === id ? filler : n)));
     }
   }
 
