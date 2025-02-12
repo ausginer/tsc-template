@@ -26,7 +26,7 @@ export default function ast(
     code += parts[i];
 
     if (filler != null) {
-      const id = `id${crypto.randomUUID().replace(/-/gu, '_')}`;
+      const id = `$${crypto.randomUUID().replace(/-/gu, '_')}`;
       code += id;
 
       if (isSourceFile(filler)) {
