@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "prepare": "npm run build",
     "clean": "git clean -fx . -e .vite -e .idea -e node_modules",
     "build": "tsc -p tsconfig.build.json",
     "test": "vitest --run",
