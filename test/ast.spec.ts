@@ -39,4 +39,18 @@ describe('ast', () => {
     const sourceFile = ast`const x = ${ast`[1, 2, 3]; /** @END */ console.log(10);`};`;
     expect(printer.printFile(sourceFile)).to.be.equal('const x = [1, 2, 3];\n');
   });
+
+  it('should extract a part of the AST bound with "%{" and "}%" tags', () => {
+    const sourceFile = ast`const x = ${ast`const b = %{ function tst() {} }%`};`;
+    expect(printer.printFile(sourceFile)).to.be.equal('const x = function tst() { };\n');
+  });
+
+  it('should fail if there is more than one set of code extractors', () => {
+    const error = 'Only one set of code extractors is allowed: %{ ... }% or /** @START */ ... /** @END */';
+
+    expect(() => ast`const x = ${ast`const b = %{ function tst() %{ {} }% }%`};`).to.throw(error);
+    expect(
+      () => ast`const x = ${ast`const b = /** @START */ function tst() { /** @START */ {} /** @END */ }`};`,
+    ).to.throw(error);
+  });
 });

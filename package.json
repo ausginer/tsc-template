@@ -28,8 +28,8 @@
   "homepage": "https://github.com/ausginer/tsc-template#readme",
   "exports": {
     ".": {
-      "default": "./index.js",
-      "types": "./index.d.ts"
+      "types": "./index.d.ts",
+      "default": "./index.js"
     }
   },
   "peerDependencies": {

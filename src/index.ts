@@ -1,6 +1,5 @@
 import {
   createSourceFile,
-  forEachChild,
   isIdentifier,
   isSourceFile,
   type Node,
@@ -9,10 +8,9 @@ import {
   type SourceFile,
   transform,
   type TransformerFactory,
-  type Visitor,
 } from 'typescript';
 import { createTransformer } from './createTransformer.js';
-import { extractFillerPart } from './extractFillerPart.js';
+import { findBestNode } from './findBestNode.js';
 
 export * from './createTransformer.js';
 
@@ -24,31 +22,30 @@ export default function ast(
   const transformers: Array<TransformerFactory<SourceFile>> = [];
 
   for (let i = 0; i < parts.length; i++) {
-    const filler = fillers[i];
+    let filler = fillers[i] ?? undefined;
     code += parts[i];
 
     if (filler != null) {
       const id = `id${crypto.randomUUID().replace(/-/gu, '_')}`;
       code += id;
 
-      let _filler: Node | undefined = filler;
-
       if (isSourceFile(filler)) {
-        const fillerString = extractFillerPart(filler.getText());
-
-        const visitor: Visitor<Node, Node | undefined> = (node) => {
-          if (node.getText(filler) === fillerString) {
-            _filler = node;
-          }
-
-          return forEachChild(node, visitor);
-        };
-
-        forEachChild(filler, visitor);
+        filler = findBestNode(filler);
       }
 
-      transformers.push(createTransformer((n) => (isIdentifier(n) && n.text === id ? _filler : n)));
+      transformers.push(createTransformer((n) => (isIdentifier(n) && n.text === id ? filler : n)));
     }
+  }
+
+  if (code.includes('%{') || code.includes('}%')) {
+    code = code.replaceAll('%{', '/** @START */').replaceAll('}%', '/** @END */');
+  }
+
+  if (
+    code.indexOf('/** @START */') !== code.lastIndexOf('/** @START */') ||
+    code.indexOf('/** @END */') !== code.lastIndexOf('/** @END */')
+  ) {
+    throw new Error('Only one set of code extractors is allowed: %{ ... }% or /** @START */ ... /** @END */');
   }
 
   return transform(createSourceFile('', code, ScriptTarget.Latest, false, ScriptKind.TSX), transformers)
