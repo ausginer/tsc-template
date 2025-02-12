@@ -1,7 +1,20 @@
-import ts, { type Node, type SourceFile, type TransformerFactory } from 'typescript';
-import { transform } from './transform.js';
+import {
+  createSourceFile,
+  forEachChild,
+  isIdentifier,
+  isSourceFile,
+  type Node,
+  ScriptKind,
+  ScriptTarget,
+  type SourceFile,
+  transform,
+  type TransformerFactory,
+  type Visitor,
+} from 'typescript';
+import { createTransformer } from './createTransformer.js';
+import { extractFillerPart } from './extractFillerPart.js';
 
-export * from './transform.js';
+export * from './createTransformer.js';
 
 export default function ast(
   parts: TemplateStringsArray,
@@ -18,9 +31,26 @@ export default function ast(
       const id = `id${crypto.randomUUID().replace(/-/gu, '_')}`;
       code += id;
 
-      transformers.push(transform((n) => (ts.isIdentifier(n) && n.text === id ? filler : n)));
+      let _filler: Node | undefined = filler;
+
+      if (isSourceFile(filler)) {
+        const fillerString = extractFillerPart(filler.getText());
+
+        const visitor: Visitor<Node, Node | undefined> = (node) => {
+          if (node.getText(filler) === fillerString) {
+            _filler = node;
+          }
+
+          return forEachChild(node, visitor);
+        };
+
+        forEachChild(filler, visitor);
+      }
+
+      transformers.push(createTransformer((n) => (isIdentifier(n) && n.text === id ? _filler : n)));
     }
   }
 
-  return ts.transform(ts.createSourceFile('f.ts', code, ts.ScriptTarget.Latest, false), transformers).transformed[0]!;
+  return transform(createSourceFile('', code, ScriptTarget.Latest, false, ScriptKind.TSX), transformers)
+    .transformed[0]!;
 }
