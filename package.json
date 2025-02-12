@@ -1,7 +1,7 @@
 {
-  "name": "ts-ast-template",
+  "name": "tsc-template",
   "version": "0.1.0",
-  "description": "Utility pack to build TypeScript faster and more efficient",
+  "description": "Utility to build TypeScript AST from a string, similar to @babel/template",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -12,20 +12,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ausginer/ts-rakentaja.git"
+    "url": "git+https://github.com/ausginer/tsc-template.git"
   },
   "keywords": [
     "typescript",
-    "constructor",
-    "builder",
+    "util",
+    "template",
     "ast"
   ],
   "author": "Vlad Rindevich <vladrin@vaadin.com> (https://github.com/Lodin)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ausginer/ts-rakentaja/issues"
+    "url": "https://github.com/ausginer/tsc-template/issues"
   },
-  "homepage": "https://github.com/ausginer/ts-rakentaja#readme",
+  "homepage": "https://github.com/ausginer/tsc-template#readme",
   "exports": {
     ".": {
       "default": "./index.js",
