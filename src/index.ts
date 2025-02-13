@@ -11,13 +11,14 @@ import {
 } from 'typescript';
 import { createTransformer } from './createTransformer.js';
 import { findBestNode } from './findBestNode.js';
+import { $templateResult, isTemplateResult, type TemplateResult } from './TemplateResult.js';
 
 export * from './createTransformer.js';
 
 export default function ast(
   parts: TemplateStringsArray,
-  ...fillers: ReadonlyArray<Node | string | null | undefined>
-): SourceFile {
+  ...fillers: ReadonlyArray<TemplateResult | Node | string | null | undefined>
+): TemplateResult {
   let code = '';
   const transformers: Array<TransformerFactory<SourceFile>> = [];
 
@@ -34,7 +35,7 @@ export default function ast(
 
         transformers.push(
           createTransformer((n) =>
-            isIdentifier(n) && n.text === id ? (isSourceFile(filler) ? findBestNode(filler) : filler) : n,
+            isIdentifier(n) && n.text === id ? (isTemplateResult(filler) ? filler.node : filler) : n,
           ),
         );
       }
@@ -52,6 +53,14 @@ export default function ast(
     throw new Error('Only one set of code extractors is allowed: %{ ... }% or /** @START */ ... /** @END */');
   }
 
-  return transform(createSourceFile('', code, ScriptTarget.Latest, false, ScriptKind.TSX), transformers)
+  const source = transform(createSourceFile('', code, ScriptTarget.Latest, false, ScriptKind.TSX), transformers)
     .transformed[0]!;
+
+  const node = findBestNode(source);
+
+  if (!node) {
+    throw new Error('No node was found using the provided code extractors');
+  }
+
+  return { brand: $templateResult, node, source };
 }
