@@ -51,7 +51,7 @@ import ast from 'tsc-template';
 
 const file = ast`const foo = ${ast`[1, 2, 3]`}`;
 
-assertEqual(file.getText(), 'const foo = [1, 2, 3]');
+assertEqual(file.getText(), 'const foo = [1, 2, 3];');
 ```
 
 #### Tags for Custom AST Extractions

@@ -6,5 +6,5 @@ export function extractCodePart(str: string): string {
   const [, endResult = startResult] = /([\s\S]*?)\/\*\*\s*@END\s*\*\//iu.exec(startResult) ?? [];
 
   // Remove the leading and trailing whitespaces and the trailing semicolon/comma
-  return endResult.trim().replace(/[;,]$/u, '');
+  return endResult.trim();
 }
