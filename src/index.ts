@@ -56,11 +56,5 @@ export default function ast(
   const source = transform(createSourceFile('', code, ScriptTarget.Latest, false, ScriptKind.TSX), transformers)
     .transformed[0]!;
 
-  const node = findBestNode(source);
-
-  if (!node) {
-    throw new Error('No node was found using the provided code extractors');
-  }
-
-  return { brand: $templateResult, node, source };
+  return { brand: $templateResult, node: findBestNode(source), source };
 }

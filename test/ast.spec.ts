@@ -79,4 +79,9 @@ describe('ast', () => {
       () => ast`const x = ${ast`const b = /** @START */ function tst() { /** @START */ {} /** @END */ }`};`,
     ).to.throw(error);
   });
+
+  it('should ignore nodes with synthesized position', () => {
+    const arr = factory.createArrayLiteralExpression([], true);
+    expect(() => ast`const arr = ${arr};export default arr;`).to.not.throw();
+  });
 });
